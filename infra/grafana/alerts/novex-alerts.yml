@@ -1,0 +1,98 @@
+# NovEx Prometheus Alert Rules
+# Load via: rule_files: ['/etc/prometheus/alerts/novex-alerts.yml']
+
+groups:
+  - name: novex-critical
+    rules:
+      - alert: ReconciliationMismatch
+        expr: novex_reconciliation_mismatch_total > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Reconciliation mismatch detected"
+          description: "{{ $value }} mismatches found. Run reconciliation details check."
+          runbook: "docs/DESIGN-reconciliation.md#when-a-mismatch-is-found"
+
+      - alert: NegativeBalance
+        expr: novex_reconciliation_last_run_status == 1
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Reconciliation run failed — possible negative balance or invariant breach"
+          runbook: "docs/DESIGN-reconciliation.md"
+
+      - alert: DuplicateFeeLedger
+        expr: increase(novex_reconciliation_mismatch_total{mismatch_type="missing_fee_ledger_entry"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Missing or duplicate fee ledger entries detected"
+          runbook: "docs/DESIGN-fee-model-and-stp.md"
+
+  - name: novex-high
+    rules:
+      - alert: OrderEndpoint5xxRate
+        expr: rate(novex_http_5xx_total{route=~".*orders.*"}[5m]) / rate(novex_http_requests_total{route=~".*orders.*"}[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "Order endpoint 5xx rate > 1% for 5 minutes"
+          description: "Current rate: {{ $value | humanizePercentage }}"
+
+      - alert: TreasuryFeeDrift
+        expr: increase(novex_reconciliation_mismatch_total{mismatch_type="fee_ledger_treasury_mismatch"}[5m]) > 0
+        for: 0m
+        labels:
+          severity: high
+        annotations:
+          summary: "Treasury fee balance drifted from fee_ledger totals"
+          runbook: "docs/DESIGN-reconciliation.md"
+
+      - alert: OrderPlacementLatencyHigh
+        expr: histogram_quantile(0.95, rate(novex_order_placement_duration_ms_bucket[5m])) > 500
+        for: 5m
+        labels:
+          severity: high
+        annotations:
+          summary: "Order placement p95 latency > 500ms"
+          description: "Current p95: {{ $value }}ms"
+
+  - name: novex-warning
+    rules:
+      - alert: WsDisconnectRateElevated
+        expr: rate(novex_ws_disconnect_total[5m]) > 0.83
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "WebSocket disconnect rate > 50/min"
+          description: "Current rate: {{ $value }}/s"
+
+      - alert: RateLimitSpike
+        expr: rate(novex_http_429_total[5m]) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated 429 rate limiting — possible abuse or misconfigured client"
+
+      - alert: MarketOrderRejectionSpike
+        expr: rate(novex_market_order_rejection_total[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Market order rejections elevated"
+          description: "Reasons: {{ $labels.reason }}"
+
+      - alert: PendingWithdrawalsBacklog
+        expr: novex_pending_withdrawals > 20
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 20 withdrawals pending review for 15+ minutes"

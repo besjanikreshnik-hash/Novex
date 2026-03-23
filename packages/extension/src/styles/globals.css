@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    width: 380px;
+    height: 500px;
+    overflow: hidden;
+  }
+
+  body {
+    width: 380px;
+    height: 500px;
+    font-family: "Inter", system-ui, sans-serif;
+    background-color: #0b0e14;
+    color: #e8ecf1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #232a3b;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #525c6e;
+  }
+
+  input,
+  select,
+  textarea {
+    background-color: #131720;
+    border: 1px solid #232a3b;
+    color: #e8ecf1;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #00d4aa;
+  }
+
+  input::placeholder {
+    color: #525c6e;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-novex-primary text-novex-bg font-semibold text-sm px-4 py-2 rounded-lg
+           hover:bg-novex-primary-hover transition-colors duration-150 disabled:opacity-40
+           disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-novex-surface-light text-novex-text-primary text-sm px-4 py-2 rounded-lg
+           border border-novex-border hover:border-novex-text-muted
+           transition-colors duration-150;
+  }
+
+  .btn-danger {
+    @apply bg-novex-danger-dim text-novex-danger text-sm px-3 py-1.5 rounded-lg
+           hover:bg-novex-danger hover:text-white transition-colors duration-150;
+  }
+
+  .card {
+    @apply bg-novex-surface rounded-xl border border-novex-border p-4;
+  }
+
+  .badge {
+    @apply text-2xs font-medium px-2 py-0.5 rounded-full;
+  }
+}

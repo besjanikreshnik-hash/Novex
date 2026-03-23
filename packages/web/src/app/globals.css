@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Theme CSS Custom Properties ────────────────────── */
+
+:root {
+  --nvx-bg-primary: #FFFFFF;
+  --nvx-bg-secondary: #F8F9FA;
+  --nvx-bg-tertiary: #E9ECEF;
+  --nvx-text-primary: #1A1A2E;
+  --nvx-text-secondary: #4A4A6A;
+  --nvx-text-muted: #6B7280;
+  --nvx-border: #DEE2E6;
+  --nvx-dark-950: #F3F4F6;
+  --nvx-dark-900: #F8F9FA;
+  --nvx-dark-800: #F1F3F5;
+  --nvx-dark-700: #E9ECEF;
+  --nvx-dark-600: #DEE2E6;
+  --nvx-dark-500: #CED4DA;
+  --nvx-dark-400: #ADB5BD;
+  --nvx-text-tertiary: #6B7280;
+  --nvx-border-light: #CED4DA;
+}
+
+.dark {
+  --nvx-bg-primary: #0D0D1A;
+  --nvx-bg-secondary: #151528;
+  --nvx-bg-tertiary: #1E1E3A;
+  --nvx-text-primary: #FFFFFF;
+  --nvx-text-secondary: #A0A0C0;
+  --nvx-text-muted: #5A5A7A;
+  --nvx-border: #2A2A4A;
+  --nvx-dark-950: #0D0D1A;
+  --nvx-dark-900: #121225;
+  --nvx-dark-800: #151528;
+  --nvx-dark-700: #1E1E3A;
+  --nvx-dark-600: #282850;
+  --nvx-dark-500: #353568;
+  --nvx-dark-400: #4A4A7F;
+  --nvx-text-tertiary: #6B6B8D;
+  --nvx-border-light: #282850;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--nvx-dark-950);
+    color: var(--nvx-text-primary);
+    @apply antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--nvx-dark-500);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--nvx-dark-400);
+  }
+
+  /* Number input remove arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--nvx-dark-500) transparent;
+  }
+}

@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@layer base {
+  * {
+    @apply border-surface-700;
+  }
+
+  body {
+    @apply bg-surface-950 text-surface-100 antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-surface-700 hover:bg-surface-600;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-surface-800 bg-surface-900 p-6;
+  }
+
+  .card-hover {
+    @apply card transition-colors hover:border-surface-700;
+  }
+}

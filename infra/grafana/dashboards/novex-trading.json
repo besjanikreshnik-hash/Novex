@@ -1,0 +1,203 @@
+{
+  "__inputs": [],
+  "__requires": [
+    { "type": "grafana", "id": "grafana", "name": "Grafana", "version": "10.0.0" },
+    { "type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0" }
+  ],
+  "annotations": { "list": [] },
+  "editable": true,
+  "title": "NovEx Trading Platform",
+  "uid": "novex-trading-v2",
+  "version": 2,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" }
+      }
+    ]
+  },
+  "panels": [
+    {
+      "title": "Order Placement Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "rate(novex_order_placement_total[1m])",
+          "legendFormat": "{{symbol}} {{side}} {{type}}"
+        }
+      ]
+    },
+    {
+      "title": "Order Placement Latency",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(novex_order_placement_duration_ms_bucket[5m]))",
+          "legendFormat": "p50"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(novex_order_placement_duration_ms_bucket[5m]))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(novex_order_placement_duration_ms_bucket[5m]))",
+          "legendFormat": "p99"
+        }
+      ]
+    },
+    {
+      "title": "Match-to-Settlement Latency",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(novex_match_to_settlement_duration_ms_bucket[5m]))",
+          "legendFormat": "p95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(novex_match_to_settlement_duration_ms_bucket[5m]))",
+          "legendFormat": "p99"
+        }
+      ]
+    },
+    {
+      "title": "Trades Executed",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(novex_trade_executed_total[1m])",
+          "legendFormat": "{{symbol}}"
+        }
+      ]
+    },
+    {
+      "title": "Market Order Rejections",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(novex_market_order_rejection_total[5m])",
+          "legendFormat": "{{reason}}"
+        }
+      ]
+    },
+    {
+      "title": "Idempotency Replays",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 8 },
+      "targets": [
+        { "expr": "novex_idempotency_replay_total" }
+      ]
+    },
+    {
+      "title": "Cancel Failures",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 8 },
+      "targets": [
+        { "expr": "novex_cancel_failure_total" }
+      ]
+    },
+    {
+      "title": "WebSocket Connections",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 12 },
+      "targets": [
+        { "expr": "novex_ws_active_connections", "legendFormat": "active" },
+        { "expr": "rate(novex_ws_disconnect_total[5m])", "legendFormat": "disconnect rate" }
+      ]
+    },
+    {
+      "title": "Reconciliation Mismatches",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 16 },
+      "targets": [
+        { "expr": "novex_reconciliation_mismatch_total" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "color": "green", "value": 0 },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Treasury Fee Accrual",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 4, "y": 16 },
+      "targets": [
+        {
+          "expr": "rate(novex_treasury_fee_collected_total[5m])",
+          "legendFormat": "{{asset}} ({{source}})"
+        }
+      ]
+    },
+    {
+      "title": "HTTP Error Rates",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 12, "y": 16 },
+      "targets": [
+        { "expr": "rate(novex_http_5xx_total[5m])", "legendFormat": "5xx: {{method}} {{route}}" },
+        { "expr": "rate(novex_http_429_total[5m])", "legendFormat": "429: {{method}} {{route}}" }
+      ]
+    },
+    {
+      "title": "Deposits Credited",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 24 },
+      "targets": [
+        {
+          "expr": "rate(novex_deposit_credited_total[5m])",
+          "legendFormat": "{{asset}} ({{network}})"
+        }
+      ]
+    },
+    {
+      "title": "Withdrawals Completed",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 6, "y": 24 },
+      "targets": [
+        {
+          "expr": "rate(novex_withdrawal_completed_total[5m])",
+          "legendFormat": "{{asset}} ({{network}})"
+        }
+      ]
+    },
+    {
+      "title": "Auth Activity",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 24 },
+      "targets": [
+        { "expr": "rate(novex_auth_login_total[5m])", "legendFormat": "login ({{result}})" },
+        { "expr": "rate(novex_auth_register_total[5m])", "legendFormat": "register ({{result}})" }
+      ]
+    },
+    {
+      "title": "Pending Withdrawals",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 24 },
+      "targets": [
+        { "expr": "novex_pending_withdrawals" }
+      ]
+    },
+    {
+      "title": "Node.js Heap Used",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 28 },
+      "targets": [
+        { "expr": "novex_nodejs_heap_size_used_bytes / 1024 / 1024", "legendFormat": "heap MB" }
+      ]
+    }
+  ]
+}
