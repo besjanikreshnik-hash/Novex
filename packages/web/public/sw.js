@@ -97,6 +97,53 @@ async function cacheFirst(request) {
   }
 }
 
+// ── Push Notifications ─────────────────────────────────────
+self.addEventListener('push', (event) => {
+  let data = { title: 'NovEx', body: 'You have a new notification' };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: '/icons/icon.svg',
+    badge: '/icons/icon.svg',
+    vibrate: [100, 50, 100],
+    data: data.data || {},
+    actions: data.actions || [],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'NovEx', options)
+  );
+});
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const urlToOpen = event.notification.data?.url || '/';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      // Focus existing window if available
+      for (const client of clients) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(urlToOpen);
+          return client.focus();
+        }
+      }
+      // Open new window
+      return self.clients.openWindow(urlToOpen);
+    })
+  );
+});
+
 // Check if the request is for a static asset
 function isStaticAsset(pathname) {
   return /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/.test(pathname) ||

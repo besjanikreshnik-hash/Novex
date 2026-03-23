@@ -7,7 +7,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthNavigator } from './src/navigation/AuthNavigator';
 import { MainNavigator } from './src/navigation/MainNavigator';
+import { NotificationHandler } from './src/components/common/NotificationHandler';
 import { useAuthStore } from './src/stores/auth.store';
+import { registerForPushNotifications } from './src/lib/push';
 import { colors } from './src/theme';
 
 const queryClient = new QueryClient({
@@ -36,6 +38,14 @@ const navTheme = {
 
 function RootNavigator() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  // Register for push notifications once authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      registerForPushNotifications().catch(() => {});
+    }
+  }, [isAuthenticated]);
+
   return isAuthenticated ? <MainNavigator /> : <AuthNavigator />;
 }
 
@@ -71,6 +81,7 @@ export default function App() {
           <NavigationContainer theme={navTheme}>
             <StatusBar style="light" />
             <RootNavigator />
+            <NotificationHandler />
           </NavigationContainer>
         </QueryClientProvider>
       </SafeAreaProvider>

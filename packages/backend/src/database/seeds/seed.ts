@@ -138,6 +138,57 @@ async function seed(): Promise<void> {
       `, [c.key, c.value, c.description, adminId]);
     }
 
+    // ── Launchpad Projects ────────────────────────────────
+    console.log('Seeding launchpad projects...');
+
+    const nvxStartDate = new Date();
+    nvxStartDate.setDate(nvxStartDate.getDate() + 7);
+    const nvxEndDate = new Date(nvxStartDate);
+    nvxEndDate.setDate(nvxEndDate.getDate() + 30);
+
+    await queryRunner.query(`
+      INSERT INTO "launchpad_projects" (
+        "name", "token_symbol", "description", "total_supply",
+        "price_per_token", "hard_cap", "soft_cap", "raised",
+        "status", "start_date", "end_date",
+        "vesting_schedule", "social_links", "logo_url"
+      )
+      VALUES (
+        'NovToken', 'NVX',
+        'NovToken is the native utility token of the NovEx ecosystem. It provides fee discounts, governance voting rights, and staking rewards.',
+        '1000000000', '0.10', '500000', '100000', '0',
+        'upcoming', $1, $2,
+        '{"tge": "25%", "month3": "25%", "month6": "25%", "month12": "25%"}',
+        '{"website": "https://novex.io", "twitter": "https://twitter.com/novex", "telegram": "https://t.me/novex"}',
+        ''
+      )
+      ON CONFLICT DO NOTHING;
+    `, [nvxStartDate.toISOString(), nvxEndDate.toISOString()]);
+
+    const dfsStartDate = new Date();
+    dfsStartDate.setDate(dfsStartDate.getDate() - 5);
+    const dfsEndDate = new Date(dfsStartDate);
+    dfsEndDate.setDate(dfsEndDate.getDate() + 21);
+
+    await queryRunner.query(`
+      INSERT INTO "launchpad_projects" (
+        "name", "token_symbol", "description", "total_supply",
+        "price_per_token", "hard_cap", "soft_cap", "raised",
+        "status", "start_date", "end_date",
+        "vesting_schedule", "social_links", "logo_url"
+      )
+      VALUES (
+        'DeFi Shield', 'DFS',
+        'DeFi Shield provides decentralized insurance coverage for DeFi protocols. DFS token holders can stake to provide coverage and earn premiums.',
+        '500000000', '0.05', '200000', '50000', '47500',
+        'active', $1, $2,
+        '{"tge": "30%", "month1": "20%", "month3": "25%", "month6": "25%"}',
+        '{"website": "https://defishield.io", "twitter": "https://twitter.com/defishield"}',
+        ''
+      )
+      ON CONFLICT DO NOTHING;
+    `, [dfsStartDate.toISOString(), dfsEndDate.toISOString()]);
+
     await queryRunner.commitTransaction();
 
     console.log('\n✅ Seed complete!');
@@ -148,6 +199,7 @@ async function seed(): Promise<void> {
     console.log(`  Bob:   bob@test.novex.io     (id: ${bobId})`);
     console.log('─────────────────────────────────────────');
     console.log('Trading pairs: BTC_USDT, ETH_USDT, SOL_USDT');
+    console.log('Launchpad: NovToken (NVX), DeFi Shield (DFS)');
     console.log('─────────────────────────────────────────\n');
   } catch (error) {
     await queryRunner.rollbackTransaction();

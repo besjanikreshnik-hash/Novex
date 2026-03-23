@@ -37,6 +37,9 @@ export interface Translation {
   nav_p2p: string;
   nav_fees: string;
   nav_leaderboard: string;
+  nav_futures: string;
+  nav_copy_trading: string;
+  nav_bots: string;
 
   // Leaderboard
   leaderboard_title: string;
@@ -152,6 +155,9 @@ const en: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Fees',
   nav_leaderboard: 'Leaderboard',
+  nav_futures: 'Futures',
+  nav_copy_trading: 'Copy',
+  nav_bots: 'Bots',
 
   leaderboard_title: 'Trading Leaderboard',
   leaderboard_subtitle: 'Top traders by volume',
@@ -261,6 +267,9 @@ const es: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Comisiones',
   nav_leaderboard: 'Clasificaci\u00f3n',
+  nav_futures: 'Futuros',
+  nav_copy_trading: 'Copiar',
+  nav_bots: 'Bots',
 
   leaderboard_title: 'Clasificaci\u00f3n de Trading',
   leaderboard_subtitle: 'Mejores traders por volumen',
@@ -370,6 +379,9 @@ const tr: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Komisyonlar',
   nav_leaderboard: 'Siralama',
+  nav_futures: 'Vadeli',
+  nav_copy_trading: 'Kopyala',
+  nav_bots: 'Botlar',
 
   leaderboard_title: 'Trading Siralamasi',
   leaderboard_subtitle: 'Hacme gore en iyi traderlar',
@@ -479,6 +491,9 @@ const sq: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Tarifat',
   nav_leaderboard: 'Renditja',
+  nav_futures: 'Futures',
+  nav_copy_trading: 'Kopjo',
+  nav_bots: 'Bots',
 
   leaderboard_title: 'Renditja e Trading',
   leaderboard_subtitle: 'Traderet me te mire sipas volumit',
@@ -588,6 +603,9 @@ const de: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Gebuehren',
   nav_leaderboard: 'Rangliste',
+  nav_futures: 'Futures',
+  nav_copy_trading: 'Kopieren',
+  nav_bots: 'Bots',
 
   leaderboard_title: 'Trading Rangliste',
   leaderboard_subtitle: 'Top Trader nach Volumen',
@@ -697,6 +715,9 @@ const fr: Translation = {
   nav_p2p: 'P2P',
   nav_fees: 'Frais',
   nav_leaderboard: 'Classement',
+  nav_futures: 'Futures',
+  nav_copy_trading: 'Copier',
+  nav_bots: 'Bots',
 
   leaderboard_title: 'Classement Trading',
   leaderboard_subtitle: 'Meilleurs traders par volume',

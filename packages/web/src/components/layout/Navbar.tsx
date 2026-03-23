@@ -21,6 +21,8 @@ import {
   ArrowLeftRight,
   Crown,
   Trophy,
+  Copy,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth.store";
@@ -33,6 +35,7 @@ import type { Translation } from "@/lib/i18n/translations";
 const navLinks: { href: string; labelKey: keyof Translation; icon: typeof TrendingUp }[] = [
   { href: "/convert", labelKey: "nav_convert", icon: ArrowLeftRight },
   { href: "/trade", labelKey: "nav_trade", icon: TrendingUp },
+  { href: "/futures", labelKey: "nav_futures", icon: BarChart3 },
   { href: "/portfolio", labelKey: "nav_portfolio", icon: PieChart },
   { href: "/markets", labelKey: "nav_markets", icon: LayoutGrid },
   { href: "/history", labelKey: "nav_history", icon: ClipboardList },
@@ -40,6 +43,8 @@ const navLinks: { href: string; labelKey: keyof Translation; icon: typeof Trendi
   { href: "/earn", labelKey: "nav_earn", icon: Coins },
   { href: "/p2p", labelKey: "nav_p2p", icon: Users },
   { href: "/fees", labelKey: "nav_fees", icon: Crown },
+  { href: "/copy-trading", labelKey: "nav_copy_trading", icon: Copy },
+  { href: "/bots", labelKey: "nav_bots", icon: Bot },
   { href: "/leaderboard", labelKey: "nav_leaderboard", icon: Trophy },
   { href: "/alerts", labelKey: "nav_alerts", icon: Bell },
   { href: "/referral", labelKey: "nav_referral", icon: Users },

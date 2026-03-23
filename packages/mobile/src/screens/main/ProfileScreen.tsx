@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  Switch,
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +13,7 @@ import { Svg, Path, Circle as SvgCircle } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { colors, spacing, borderRadius, typography } from '../../theme';
 import { useAuthStore } from '../../stores/auth.store';
+import { registerForPushNotifications, unregisterPushToken } from '../../lib/push';
 import type { KycStatus } from '../../types';
 
 // ── Mock User Data ────────────────────────────────────────────────────────────
@@ -95,6 +97,17 @@ function SettingsRow({
 
 export function ProfileScreen() {
   const logout = useAuthStore((s) => s.logout);
+  const [pushEnabled, setPushEnabled] = useState(true);
+
+  const handleTogglePush = useCallback(async (value: boolean) => {
+    setPushEnabled(value);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (value) {
+      await registerForPushNotifications();
+    } else {
+      await unregisterPushToken();
+    }
+  }, []);
 
   const handleLogout = useCallback(() => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -205,6 +218,22 @@ export function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preferences</Text>
           <View style={styles.settingsGroup}>
+            <SettingsRow
+              icon={
+                <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+                  <Path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke={colors.primary} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                </Svg>
+              }
+              label="Push Notifications"
+              value={
+                <Switch
+                  value={pushEnabled}
+                  onValueChange={handleTogglePush}
+                  trackColor={{ false: colors.bgTertiary, true: colors.primaryMuted }}
+                  thumbColor={pushEnabled ? colors.primary : colors.textTertiary}
+                />
+              }
+            />
             <SettingsRow
               icon={
                 <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">

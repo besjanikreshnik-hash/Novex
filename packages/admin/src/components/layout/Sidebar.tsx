@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import {
+  Activity,
   BarChart3,
   ChevronLeft,
   ClipboardList,
@@ -33,6 +34,7 @@ const navigation: NavSection[] = [
     title: "Overview",
     items: [
       { label: "Dashboard", href: "/", icon: <LayoutDashboard className="h-5 w-5" /> },
+      { label: "Analytics", href: "/analytics", icon: <Activity className="h-5 w-5" /> },
     ],
   },
   {

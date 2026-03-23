@@ -28,9 +28,14 @@ import { StakingModule } from './modules/staking/staking.module';
 import { ActivityModule } from './modules/activity/activity.module';
 import { ApiKeysModule } from './modules/api-keys/api-keys.module';
 import { EmailModule } from './common/email/email.module';
+import { PushModule } from './common/push/push.module';
 import { LeaderboardModule } from './modules/leaderboard/leaderboard.module';
 import { FeeTiersModule } from './modules/fee-tiers/fee-tiers.module';
 import { P2pModule } from './modules/p2p/p2p.module';
+import { LaunchpadModule } from './modules/launchpad/launchpad.module';
+import { FuturesModule } from './modules/futures/futures.module';
+import { CopyTradingModule } from './modules/copy-trading/copy-trading.module';
+import { BotsModule } from './modules/bots/bots.module';
 
 @Module({
   imports: [
@@ -109,9 +114,14 @@ import { P2pModule } from './modules/p2p/p2p.module';
     ActivityModule,
     ApiKeysModule,
     EmailModule,
+    PushModule,
     LeaderboardModule,
     FeeTiersModule,
     P2pModule,
+    LaunchpadModule,
+    FuturesModule,
+    CopyTradingModule,
+    BotsModule,
   ],
   providers: [
     {

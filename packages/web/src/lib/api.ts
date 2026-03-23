@@ -713,3 +713,243 @@ export const apiKeysApi = {
     return request<{ message: string }>('DELETE', `/api-keys/${keyId}`);
   },
 };
+
+/* ─── Launchpad ────────────────────────────────────── */
+
+export interface LaunchpadProjectDto {
+  id: string;
+  name: string;
+  tokenSymbol: string;
+  description: string;
+  totalSupply: string;
+  pricePerToken: string;
+  hardCap: string;
+  softCap: string;
+  raised: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  vestingSchedule: Record<string, unknown>;
+  socialLinks: Record<string, string>;
+  logoUrl: string;
+  progress: number;
+  createdAt: string;
+}
+
+export interface LaunchpadContributionDto {
+  id: string;
+  projectId: string;
+  projectName: string;
+  tokenSymbol: string;
+  amount: string;
+  tokenAllocation: string;
+  status: string;
+  createdAt: string;
+}
+
+export const launchpadApi = {
+  getProjects(status?: string) {
+    const qs = status ? `?status=${status}` : '';
+    return request<LaunchpadProjectDto[]>('GET', `/launchpad/projects${qs}`);
+  },
+
+  getProject(id: string) {
+    return request<LaunchpadProjectDto>('GET', `/launchpad/projects/${id}`);
+  },
+
+  contribute(projectId: string, amount: string) {
+    return request<LaunchpadContributionDto>('POST', '/launchpad/contribute', {
+      projectId,
+      amount,
+    });
+  },
+
+  claimTokens(contributionId: string) {
+    return request<LaunchpadContributionDto>(
+      'POST',
+      `/launchpad/claim/${contributionId}`,
+    );
+  },
+
+  getMyContributions() {
+    return request<LaunchpadContributionDto[]>('GET', '/launchpad/my-contributions');
+  },
+};
+
+/* ─── Futures / Margin Trading ────────────────────── */
+
+export interface FuturesContractDto {
+  id: string;
+  symbol: string;
+  baseAsset: string;
+  quoteAsset: string;
+  contractType: 'perpetual' | 'quarterly';
+  maxLeverage: number;
+  maintenanceMarginRate: string;
+  takerFee: string;
+  makerFee: string;
+  markPrice: string;
+  indexPrice: string;
+  fundingRate: string;
+  nextFundingTime: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface FuturesPositionDto {
+  id: string;
+  userId: string;
+  symbol: string;
+  side: 'long' | 'short';
+  leverage: number;
+  entryPrice: string;
+  markPrice: string;
+  quantity: string;
+  margin: string;
+  unrealizedPnl: string;
+  realizedPnl: string;
+  liquidationPrice: string;
+  status: 'open' | 'closed' | 'liquidated';
+  stopLoss: string | null;
+  takeProfit: string | null;
+  createdAt: string;
+  closedAt: string | null;
+}
+
+export const futuresApi = {
+  getContracts() {
+    return request<FuturesContractDto[]>('GET', '/futures/contracts');
+  },
+
+  openPosition(dto: {
+    symbol: string;
+    side: 'long' | 'short';
+    leverage: number;
+    margin: string;
+    entryPrice: string;
+  }) {
+    return request<FuturesPositionDto>('POST', '/futures/positions', dto);
+  },
+
+  closePosition(positionId: string) {
+    return request<FuturesPositionDto>('DELETE', `/futures/positions/${positionId}`);
+  },
+
+  adjustLeverage(positionId: string, leverage: number) {
+    return request<FuturesPositionDto>('PATCH', `/futures/positions/${positionId}/leverage`, { leverage });
+  },
+
+  setSlTp(positionId: string, stopLoss?: string | null, takeProfit?: string | null) {
+    return request<FuturesPositionDto>('PATCH', `/futures/positions/${positionId}/sl-tp`, { stopLoss, takeProfit });
+  },
+
+  getPositions() {
+    return request<FuturesPositionDto[]>('GET', '/futures/positions');
+  },
+};
+
+/* ─── Copy Trading ──────────────────────────────── */
+
+export interface TraderProfileDto {
+  id: string;
+  userId: string;
+  displayName: string;
+  bio: string;
+  totalFollowers: number;
+  totalCopiers: number;
+  winRate: string;
+  totalPnl: string;
+  avgReturnPercent: string;
+  isPublic: boolean;
+  createdAt: string;
+}
+
+export interface CopyRelationshipDto {
+  id: string;
+  copierId: string;
+  traderId: string;
+  traderDisplayName: string;
+  allocationAmount: string;
+  maxPositionSize: string;
+  status: string;
+  totalCopiedTrades: number;
+  totalPnl: string;
+  createdAt: string;
+}
+
+export const copyTradingApi = {
+  getTopTraders(limit = 20) {
+    return request<TraderProfileDto[]>('GET', `/copy-trading/traders?limit=${limit}`, undefined, { skipAuth: true });
+  },
+
+  getTraderProfile(userId: string) {
+    return request<TraderProfileDto>('GET', `/copy-trading/traders/${userId}`, undefined, { skipAuth: true });
+  },
+
+  startCopying(traderId: string, allocation: string) {
+    return request<CopyRelationshipDto>('POST', '/copy-trading/copy', { traderId, allocation });
+  },
+
+  stopCopying(traderId: string) {
+    return request<{ message: string }>('DELETE', `/copy-trading/copy/${traderId}`);
+  },
+
+  pauseCopying(traderId: string) {
+    return request<{ message: string }>('PATCH', `/copy-trading/copy/${traderId}/pause`);
+  },
+
+  resumeCopying(traderId: string) {
+    return request<{ message: string }>('PATCH', `/copy-trading/copy/${traderId}/resume`);
+  },
+
+  getMyCopies() {
+    return request<CopyRelationshipDto[]>('GET', '/copy-trading/my-copies');
+  },
+};
+
+/* ─── Grid Bots ─────────────────────────────────── */
+
+export interface GridBotDto {
+  id: string;
+  userId: string;
+  symbol: string;
+  status: string;
+  gridType: string;
+  lowerPrice: string;
+  upperPrice: string;
+  gridCount: number;
+  totalInvestment: string;
+  profitPerGrid: string;
+  totalProfit: string;
+  gridOrders: { level: number; price: string; side: string; orderId: string | null; status: string }[];
+  createdAt: string;
+}
+
+export const botsApi = {
+  createGridBot(dto: {
+    symbol: string;
+    gridType: 'arithmetic' | 'geometric';
+    lowerPrice: string;
+    upperPrice: string;
+    gridCount: number;
+    totalInvestment: string;
+  }) {
+    return request<GridBotDto>('POST', '/bots/grid', dto);
+  },
+
+  getBots() {
+    return request<GridBotDto[]>('GET', '/bots');
+  },
+
+  stopBot(botId: string) {
+    return request<GridBotDto>('PATCH', `/bots/${botId}/stop`);
+  },
+
+  pauseBot(botId: string) {
+    return request<GridBotDto>('PATCH', `/bots/${botId}/pause`);
+  },
+
+  resumeBot(botId: string) {
+    return request<GridBotDto>('PATCH', `/bots/${botId}/resume`);
+  },
+};

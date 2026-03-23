@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Notification, NotificationType } from './notification.entity';
 import { EmailService } from '../../common/email/email.service';
+import { PushService } from '../../common/push/push.service';
 import { UsersService } from '../users/users.service';
 
 export interface GetNotificationsOptions {
@@ -19,6 +20,7 @@ export class NotificationsService {
     @InjectRepository(Notification)
     private readonly notificationRepo: Repository<Notification>,
     private readonly emailService: EmailService,
+    private readonly pushService: PushService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -43,6 +45,13 @@ export class NotificationsService {
 
     const saved = await this.notificationRepo.save(notification);
     this.logger.debug(`Notification created: ${type} for user ${userId}`);
+
+    // ── Send push notification ──────────────────────────
+    this.pushService
+      .sendPush(userId, title, message, metadata ?? undefined)
+      .catch((err) =>
+        this.logger.warn(`Failed to send push notification: ${err}`),
+      );
 
     // ── Send email notification for trade fills ──────────
     if (type === NotificationType.TRADE_FILL && metadata) {
